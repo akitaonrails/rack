@@ -219,6 +219,14 @@ context 'Rack::Auth::Digest::MD5' do
     end
   end
 
+  specify 'should return application output if correct credentials given for PATCH (using method override of POST)' do
+    @request = Rack::MockRequest.new(protected_app_with_method_override)
+    request_with_digest_auth 'POST', '/', 'Alice', 'correct-password', :input => "_method=patch" do |response|
+      response.status.should.equal 200
+      response.body.to_s.should.equal 'Hi Alice'
+    end
+  end
+
   specify 'realm as optional constructor arg' do
     app = Rack::Auth::Digest::MD5.new(unprotected_app, realm) { true }
     assert_equal realm, app.realm

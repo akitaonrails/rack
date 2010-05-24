@@ -83,6 +83,7 @@ module Rack
     def get?;            request_method == "GET"                  end
     def post?;           request_method == "POST"                 end
     def put?;            request_method == "PUT"                  end
+    def patch?;          request_method == "PATCH"                end
     def delete?;         request_method == "DELETE"               end
     def head?;           request_method == "HEAD"                 end
 
