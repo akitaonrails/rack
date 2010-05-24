@@ -43,7 +43,7 @@ context "Rack::MockRequest" do
     env["mock.postdata"].should.be.empty
   end
 
-  specify "should allow GET/POST/PUT/DELETE" do
+  specify "should allow GET/POST/PUT/PATCH/DELETE" do
     res = Rack::MockRequest.new(app).get("", :input => "foo")
     env = YAML.load(res.body)
     env["REQUEST_METHOD"].should.equal "GET"

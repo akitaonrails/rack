@@ -32,6 +32,25 @@ context "Rack::MethodOverride" do
     req.env["REQUEST_METHOD"].should.equal "PUT"
   end
 
+  specify "_method parameter should modify REQUEST_METHOD for PATCH requests" do
+    env = Rack::MockRequest.env_for("/", :method => "PATCH", :input => "_method=patch")
+    app = Rack::MethodOverride.new(lambda { |env| Rack::Request.new(env) })
+    req = app.call(env)
+
+    req.env["REQUEST_METHOD"].should.equal "PATCH"
+  end
+
+  specify "X-HTTP-Method-Override header should modify REQUEST_METHOD for PATCH requests" do
+    env = Rack::MockRequest.env_for("/",
+            :method => "POST",
+            "HTTP_X_HTTP_METHOD_OVERRIDE" => "PATCH"
+          )
+    app = Rack::MethodOverride.new(lambda { |env| Rack::Request.new(env) })
+    req = app.call(env)
+
+    req.env["REQUEST_METHOD"].should.equal "PATCH"
+  end
+
   specify "should not modify REQUEST_METHOD if the method is unknown" do
     env = Rack::MockRequest.env_for("/", :method => "POST", :input => "_method=foo")
     app = Rack::MethodOverride.new(lambda { |env| Rack::Request.new(env) })

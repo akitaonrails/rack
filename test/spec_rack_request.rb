@@ -116,6 +116,16 @@ context "Rack::Request" do
     req.body.read.should.equal "foo=bar&quux=bla"
   end
 
+  specify "can parse POST data on PATCH when media type is form-data" do
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/?foo=quux",
+        "REQUEST_METHOD" => 'PATCH',
+        "CONTENT_TYPE" => 'application/x-www-form-urlencoded',
+        :input => "foo=bar&quux=bla")
+    req.POST.should.equal "foo" => "bar", "quux" => "bla"
+    req.body.read.should.equal "foo=bar&quux=bla"
+  end
+
   specify "rewinds input after parsing POST data" do
     input = StringIO.new("foo=bar&quux=bla")
     req = Rack::Request.new \
